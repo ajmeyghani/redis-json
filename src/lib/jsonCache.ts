@@ -15,7 +15,14 @@ export default class JSONCache<T> implements IJSONCache<T> {
    * @param options Options for controlling the prefix
    */
   constructor(private redisClient: any, private options: IOptions = {}) {
-    this.options.prefix = options.prefix || 'jc:';
+    const defaultPrefix = "jc:";
+    const isValidPrefixType =
+      typeof options.prefix === "undefined" || typeof options.prefix === "string";
+    if (!isValidPrefixType) {
+      throw new Error("Only strings are allowed for prefix values.");
+    }
+    this.options.prefix =
+      options.prefix === void 0 ? defaultPrefix : options.prefix;
   }
 
   /**

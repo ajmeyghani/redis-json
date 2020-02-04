@@ -163,6 +163,18 @@ describe('#redis-json', () => {
     expect(deepEq(redisData, obj)).to.be.true;
   });
 
+  it('should consider `""` as the prefix if prefix is set to "".', async () => {
+    const jc = new JSONCache<T>(redis, {prefix: ""});
+
+    const obj = { random: (Math.random() * 1000).toString() };
+    await jc.set('8', obj);
+
+    const redisData = await redis.hgetall(`8`);
+    delete redisData.__jc_root__;
+
+    expect(deepEq(redisData, obj)).to.be.true;
+  });
+
   it('should remove all the keys on clearAll', async () => {
     const obj = { a: 1 };
     await jsonCache.set('7', obj);
